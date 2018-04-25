@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hent Jason</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<header>
+    <img src="logo.png" alt="food8 logo">
+</header>
+
+<body>
+    <nav data-menu>
+
+        <a href="steder.html">Steder</a>
+        <a href="nyheder.html">Nyheder</a></nav>
+
+    <section id="modtager"></section>
+
+    <template id="myTemplate">
+
+        <article>
+        <h2 data-resturantnavn></h2>
+        <img src="x" data-billede>
+        <img src="x" data-logo>
+        <p data-resturanttekst></p>
+        <p data-adresse></p>
+        <p data-telefon></p>
+        <p data-kontakt></p>
+        </article>
+
+    </template>
+
+
+    <script>
+        let restauranter;
+        let minTemplate = document.querySelector("#myTemplate");
+
+        //hent json
+        async function hentJson() {
+
+            let jsonObjekt = await fetch("http://augustabondo.dk/food8/wordpress/wp-json/wp/v2/restauranter");
+
+            //vis objekt som json
+
+            restauranter = await jsonObjekt.json();
+
+            visRestauranter();
+        }
+
+        //lav klon af template
+
+        function visRestauranter() {
+            //console.log(observationer);
+            //kør json array´et igennem og lav en klon af template
+            restauranter.forEach(element => {
+
+                let klon = minTemplate.cloneNode(true).content;
+                klon.querySelector("[data-resturantnavn]").innerHTML = element.title.rendered;
+                klon.querySelector("[data-resturanttekst]").innerHTML = element.acf.beskrivelse;
+                klon.querySelector("[data-billede]").src = element.acf.billede.url;
+                klon.querySelector("[data-logo]").src = element.acf.logo.url;
+                klon.querySelector("[data-adresse]").textContent = element.acf.adresse;
+                klon.querySelector("[data-telefon]").textContent = element.acf.telefon;
+                klon.querySelector("[data-kontakt]").textContent = element.acf.kontakt;
+
+                document.querySelector("#modtager").appendChild(klon);
+
+            })
+
+        }
+
+
+        //vis template i DOM
+
+        document.addEventListener("DOMContentLoaded", hentJson);
+    </script>
+    <script href="menu.js"></script>
+
+
+</body>
+
+</html>

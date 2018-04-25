@@ -1,0 +1,28 @@
+img {
+    width: 100vw;
+    height: 100%;
+
+}
+
+
+p {}
+
+
+h1 {}
+
+h2 {}
+
+
+
+header img {
+    width: 75%;
+    height: auto;
+}
+
+
+nav a {
+
+    border-style: solid;
+    border-color: red;
+    padding: 5px;
+}

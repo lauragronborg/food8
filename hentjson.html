@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hent Json</title>
+
+</head>
+
+<body>
+
+    <section id="modtager"></section>
+
+    <template id="myTemplate">
+
+        <article>
+        <h2 data-fuglenavn></h2>
+        <p data-fugletype></p>
+        <img src="" data-billede>
+        <p data-tekst></p>
+        </article>
+
+    </template>
+
+    <script>
+        let fugleobservationer;
+        let minTemplate = document.querySelector("#myTemplate");
+
+        //hent json
+        async function hentJson() {
+
+            let jsonObjekt = await fetch("http://ingridhn.com/pip/wordpress/wp-json/wp/v2/fugleobservationer");
+
+            //vis objekt som json
+
+            fugleobservationer = await jsonObjekt.json();
+
+            visFugle();
+
+
+        }
+
+        //lav klon af template
+
+        function visFugle() {
+            //console.log(observasjoner);
+            //kør json array´et igjennom og lag en klon af template
+            fugleobservationer.forEach(element => {
+
+                let klon = minTemplate.cloneNode(true).content;
+                klon.querySelector("[data-fuglenavn]").textContent = element.acf.fuglenavn;
+                klon.querySelector("[data-fugletype]").textContent = element.acf.fugletype;
+                klon.querySelector("[data-tekst]").textContent = element.content.rendered;
+                klon.querySelector("[data-billede]").src = element.acf.foto;
+                document.querySelector("#modtager").appendChild(klon);
+
+            })
+
+
+
+        }
+
+
+
+        //vis template i DOM
+
+        document.addEventListener("DOMContentLoaded", hentJson);
+    </script>
+</body>
+
+</html>

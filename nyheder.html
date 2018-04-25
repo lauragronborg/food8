@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nyheder</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<header>
+    <img src="logo.png" alt="food8 logo">
+</header>
+
+<body>
+    <nav data-menu></nav>
+    <section id="modtager"></section>
+
+    <template id="myTemplate">
+
+        <article>
+        <h2 data-nyhed></h2>
+        <img src="x" data-nyhedsbillede>
+        <p data-nyhedstekst></p>
+        </article>
+
+    </template>
+
+
+    <script>
+        let nyheder;
+        let minTemplate = document.querySelector("#myTemplate");
+
+        //hent json
+        async function hentJson() {
+
+            let jsonObjekt = await fetch("http://augustabondo.dk/food8/wordpress/wp-json/wp/v2/nyheder");
+
+            //vis objekt som json
+
+            nyheder = await jsonObjekt.json();
+
+            visNyheder();
+        }
+
+        //lav klon af template
+
+        function visNyheder() {
+            //console.log(observasjoner);
+            //kør json array´et igjennom og lag en klon af template
+            nyheder.forEach(element => {
+
+                let klon = minTemplate.cloneNode(true).content;
+                klon.querySelector("[data-nyhed]").innerHTML = element.title.rendered;
+                klon.querySelector("[data-nyhedsbillede]").src = element.acf.nyheds_billede.url;
+                klon.querySelector("[data-nyhedstekst]").innerHTML = element.content.rendered;
+
+                document.querySelector("#modtager").appendChild(klon);
+
+            })
+
+        }
+
+
+        //vis template i DOM
+
+        document.addEventListener("DOMContentLoaded", hentJson);
+
+    </script>
+
+
+</body>
+
+</html>
